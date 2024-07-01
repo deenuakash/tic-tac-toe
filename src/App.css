@@ -1,5 +1,18 @@
+h1 {
+    text-align: center;
+}
+
+p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+input {
+    max-width : 54px;
+}
+
 .container {
-    max-width: calc(3 * 100px);
+    /* max-width: calc(3 * 100px); */
     margin: 0 auto;
     text-align: center;
     padding: 20px;
@@ -10,12 +23,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .board {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    /* grid-template-columns: repeat(3,1fr); */
     justify-content: center;
 }
 
@@ -34,8 +47,14 @@
 
 .reset {
     padding: 5px 10px;
+    margin-left: auto;
 }
 
 button:disabled {
     color:black;
+}
+
+.size-container {
+    display: flex;
+    gap: 8px
 }

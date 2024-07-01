@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const useGame = (size) => {
-  const [board, setBoard] = useState(new Array(size * size).fill(null));
+const useGame = () => {
   const [isX, setIsX] = useState(true);
+  const [size, setSize] = useState(3);
+  const [board, setBoard] = useState();
+
+  const initialize = (size) => {
+    setBoard(new Array(size * size).fill(null));
+    setIsX(true)
+  };
+
+  useEffect(() => {
+    initialize(size > 3 ? size : 3);
+  }, [size]);
 
   const handleClick = (index) => {
     if (validateWin(board) || board[index]) return;
@@ -12,33 +22,55 @@ const useGame = (size) => {
     setIsX(!isX);
   };
 
-  const winningCombo = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
+  const generateWinningCombo = (size) => {
+    const winningCombo = [];
+
+    //rows
+    for (let i = 0; i < size; i++) {
+      const rows = [];
+      for (let j = 0; j < size; j++) {
+        rows.push(i * size + j);
+      }
+      winningCombo.push(rows);
+    }
+
+    // columns
+    for (let i = 0; i < size; i++) {
+      const columns = [];
+      for (let j = 0; j < size; j++) {
+        columns.push(j * size + i);
+      }
+      winningCombo.push(columns);
+    }
+
+    //diagonals
+    const diagonals1 = [],
+      diagonals2 = [];
+    for (let i = 0; i < size; i++) {
+      diagonals1.push(i * size + i);
+      diagonals2.push(i * size + (size - i - 1));
+    }
+    winningCombo.push([...diagonals1], [...diagonals2]);
+    return winningCombo;
+  };
+
+  const winningCombo = generateWinningCombo(size);
 
   const validateWin = (board) => {
     for (let i = 0; i < winningCombo.length; i++) {
       const combo = winningCombo[i];
-      const first = board[combo[0]]
-      if(first && combo.every((index) => board[index] === first)) 
-        return first
+      const first = board[combo[0]];
+      if (first && combo.every((index) => board[index] === first)) return first;
     }
     return null;
   };
 
   const handleMessage = () => {
-    let winStatus = validateWin(board)
+    let winStatus = board && validateWin(board);
     if (winStatus) {
-        return `Player ${winStatus} wins`
+      return `Player ${winStatus} wins`;
     }
-    if (board.every((el) => el !== null)) return "Draw!";
+    if (board?.every((el) => el !== null)) return "Draw!";
     const player = isX ? "X" : "O";
     return `Player ${player} turn`;
   };
@@ -48,7 +80,7 @@ const useGame = (size) => {
     setIsX(true);
   };
 
-  return { board, isX, handleClick, handleMessage, reset };
+  return { board, isX, handleClick, handleMessage, reset, setSize, size };
 };
 
 export default useGame;

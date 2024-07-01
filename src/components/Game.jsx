@@ -1,15 +1,30 @@
 import useGame from "../hooks/useGame";
 
-const Game = ({ size }) => {
-  const { board, handleClick, handleMessage, reset } = useGame(size);
+const Game = () => {
+  const { board, handleClick, handleMessage, reset, setSize, size } = useGame();
 
   return (
-    <>
+    <div className="container" style={{ maxWidth: `calc(${size} * 100px)` }}>
+      <p>{handleMessage()}</p>
       <div className="message">
-        {handleMessage()}
-        <button className="reset" onClick={() => reset()}>Reset game</button>
+        <div className="size-container">
+          <label htmlFor="size">Enter Size</label>
+          <input
+            id="size"
+            type="number"
+            placeholder="Enter Size"
+            onChange={(e) => setSize(e.target.value)}
+            value={size}
+          />
+        </div>
+        <button className="reset" onClick={() => reset()}>
+          Reset
+        </button>
       </div>
-      <div className="board">
+      <div
+        className="board"
+        style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+      >
         {board?.map((cell, i) => (
           <button
             className="cell"
@@ -21,7 +36,7 @@ const Game = ({ size }) => {
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
